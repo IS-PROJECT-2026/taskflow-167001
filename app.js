@@ -1,8 +1,23 @@
 const taskForm = document.getElementById("task-form");
 const taskInput = document.getElementById("task-input");
 const taskList = document.getElementById("task-list");
+const STORAGE_KEY = "taskflow.tasks";
 
-let tasks = [];
+let tasks = loadTasks();
+
+function loadTasks() {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    return stored ? JSON.parse(stored) : [];
+  } catch (error) {
+    console.error("Failed to load tasks from localStorage", error);
+    return [];
+  }
+}
+
+function saveTasks() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+}
 
 function render() {
   taskList.innerHTML = "";
@@ -41,6 +56,7 @@ function addTask(title) {
     completed: false,
   };
   tasks.push(newTask);
+  saveTasks();
   render();
 }
 
@@ -48,11 +64,13 @@ function toggleComplete(id) {
   tasks = tasks.map((task) =>
     task.id === id ? { ...task, completed: !task.completed } : task
                     );
+  saveTasks();
   render();
 }
 
 function deleteTask(id) {
   tasks = tasks.filter((task) => task.id !== id);
+  saveTasks();
   render();
 }
 
