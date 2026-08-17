@@ -13,9 +13,23 @@ function render() {
   });
 }
 
+function addTask(title) {
+  const newTask = {
+    id: Date.now(),
+    title: title.trim(),
+    completed: false,
+  };
+  tasks.push(newTask);
+  render();
+}
+
 taskForm.addEventListener("submit", (event) => {
   event.preventDefault();
-  // Task creation logic will be implemented in a follow-up branch.
+  const title = taskInput.value;
+  if (!title.trim()) return;
+  addTask(title);
+  taskInput.value = "";
+  taskInput.focus();
 });
 
 render();
